@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this data or calculator, please cite it as below."
+title: "AI GPU Handbook: LLM VRAM calculator, GPU specs dataset and cheat sheets"
+authors:
+  - name: "TensorCore.si"
+    website: "https://tensorcore.si/"
+url: "https://github.com/scienceinquiry12-max/ai-gpu-handbook"
+license: MIT
+date-released: 2026-11-18
+keywords: [gpu, llm, vram, ai-hardware, cuda, tensor-cores, quantization, fine-tuning]

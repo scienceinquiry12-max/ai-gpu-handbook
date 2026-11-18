@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LLM VRAM Calculator: How Much GPU Memory Do You Need? | AI GPU Handbook</title>
+<meta name="description" content="Free LLM VRAM calculator. Estimate GPU memory for running or fine-tuning Llama, Qwen, Mistral, Gemma and gpt-oss at FP16, FP8, Q8 or Q4, including KV cache, and see which GPUs fit.">
+<link rel="canonical" href="https://scienceinquiry12-max.github.io/ai-gpu-handbook/">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0c0f19;--card:#141a28;--line:#252d40;--txt:#e9edf5;--mut:#9aa4b8;--acc:#4ed29c;--acc2:#2b7a5c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--txt);font:16px/1.6 Inter,system-ui,sans-serif;background-image:linear-gradient(rgba(255,255,255,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.035) 1px,transparent 1px);background-size:48px 48px}
+a{color:var(--acc)}.wrap{max-width:980px;margin:0 auto;padding:40px 16px 64px}
+.lab{font:500 13px "JetBrains Mono",monospace;letter-spacing:2px;color:var(--acc);text-transform:uppercase}
+h1{font:700 clamp(28px,5vw,44px)/1.15 Sora,sans-serif;margin:8px 0 12px}h2{font:600 22px Sora,sans-serif;margin:0 0 12px}
+.lead{color:var(--mut);max-width:680px;margin:0 0 28px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}@media(max-width:760px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:22px}
+label{display:block;font-size:13px;color:var(--mut);margin:12px 0 6px}
+select,input{width:100%;background:#0e1320;color:var(--txt);border:1px solid var(--line);border-radius:9px;padding:10px 12px;font:inherit}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.custom{display:none}.custom.on{display:block}
+.total{font:700 46px Sora,sans-serif;color:var(--acc);margin:4px 0}
+.bar{display:flex;height:12px;border-radius:6px;overflow:hidden;background:#0e1320;margin:14px 0}
+.bar span{display:block;height:100%}
+table{width:100%;border-collapse:collapse;font-size:15px}td{padding:7px 0;border-bottom:1px solid var(--line)}td:last-child{text-align:right;font-family:"JetBrains Mono",monospace}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:8px;vertical-align:middle}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}.chip{background:#0e1320;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px}.chip.ok{border-color:var(--acc2);color:var(--acc)}
+.note{color:var(--mut);font-size:13px;margin-top:12px}
+.links{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-top:12px}
+.links a{display:block;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;text-decoration:none;color:var(--txt)}.links a:hover{border-color:var(--acc2)}
+.links b{display:block;color:var(--acc);font-weight:600}
+footer{margin-top:48px;color:var(--mut);font-size:14px}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="lab">AI GPU Handbook · Free tool</div>
+<h1>LLM VRAM Calculator</h1>
+<p class="lead">How much GPU memory do you need to run or fine-tune a large language model? Pick a model, precision and context length to see the weights, KV cache and total, plus the GPUs it fits on. Built by <a href="https://tensorcore.si/">TensorCore.si</a>.</p>
+
+<div class="grid">
+<div class="card">
+<h2>Settings</h2>
+<label for="model">Model</label>
+<select id="model"></select>
+<div class="custom" id="custom">
+<div class="row"><div><label for="params">Parameters (billions)</label><input id="params" type="number" value="13" min="0.1" step="0.1"></div>
+<div><label for="layers">Layers</label><input id="layers" type="number" value="40" min="1"></div></div>
+<div class="row"><div><label for="kvh">KV heads</label><input id="kvh" type="number" value="8" min="1"></div>
+<div><label for="hd">Head dimension</label><input id="hd" type="number" value="128" min="16"></div></div>
+</div>
+<label for="mode">Task</label>
+<select id="mode"><option value="inference">Run (inference)</option><option value="qlora">Fine-tune: QLoRA (4-bit)</option><option value="lora">Fine-tune: LoRA (16-bit)</option><option value="full">Full fine-tuning / training</option></select>
+<label for="prec">Weight precision (inference)</label>
+<select id="prec"><option value="2">FP16 / BF16</option><option value="1">FP8 / INT8</option><option value="1.0625">GGUF Q8_0</option><option value="0.82">GGUF Q6_K</option><option value="0.711">GGUF Q5_K_M</option><option value="0.606" selected>GGUF Q4_K_M</option><option value="0.5625">NVFP4 / MXFP4</option></select>
+<div class="row"><div><label for="ctx">Context (tokens)</label><select id="ctx"><option>2048</option><option>4096</option><option selected>8192</option><option>16384</option><option>32768</option><option>65536</option><option>131072</option></select></div>
+<div><label for="batch">Users / batch</label><input id="batch" type="number" value="1" min="1" max="256"></div></div>
+<label for="kvp">KV cache precision</label>
+<select id="kvp"><option value="2">FP16</option><option value="1">FP8 / Q8</option><option value="0.5">Q4</option></select>
+</div>
+
+<div class="card">
+<h2>Estimated memory</h2>
+<div class="total" id="total">–</div>
+<div class="bar" id="bar"></div>
+<table id="tbl"></table>
+<div class="note" id="mnote"></div>
+<h2 style="margin-top:22px">Fits on one</h2>
+<div class="chips" id="fits"></div>
+<div class="note">Estimates only; real usage varies by framework and settings. Leave 10% headroom.</div>
+</div>
+</div>
+
+<h2 style="margin-top:40px">Learn more</h2>
+<div class="links">
+<a href="https://tensorcore.si/how-much-vram-for-llm/"><b>How much VRAM for an LLM?</b>The full guide behind this calculator</a>
+<a href="https://tensorcore.si/kv-cache-explained/"><b>KV cache explained</b>Why long context eats GPU memory</a>
+<a href="https://tensorcore.si/best-gpu-for-local-llm/"><b>Best GPU for local LLMs</b>Picks from budget to high end</a>
+<a href="https://tensorcore.si/gpu-cloud-pricing/"><b>GPU cloud price tracker</b>Daily H100, H200, B200, A100 prices</a>
+<a href="https://tensorcore.si/llm-quantization-explained-gguf-gptq-awq/"><b>LLM quantization</b>GGUF, GPTQ and AWQ explained</a>
+<a href="https://tensorcore.si/what-is-fine-tuning/"><b>Fine-tuning, LoRA, QLoRA</b>When to fine-tune vs use RAG</a>
+</div>
+
+<footer>Open source on <a href="https://github.com/scienceinquiry12-max/ai-gpu-handbook">GitHub</a>: GPU specs dataset, cheat sheets, a command-line version of this calculator and code examples. Made by <a href="https://tensorcore.si/">TensorCore.si</a>, guides to tensor cores, GPUs and AI hardware.</footer>
+</div>
+
+<script>
+const MODELS={"Llama 3.1 8B":[8.03,32,4096,8,128],"Llama 3.1 70B":[70.6,80,8192,8,128],"Llama 3.1 405B":[405.9,126,16384,8,128],"Mistral 7B":[7.24,32,4096,8,128],"Qwen2.5 7B":[7.62,28,3584,4,128],"Qwen2.5 14B":[14.8,48,5120,8,128],"Qwen2.5 32B":[32.8,64,5120,8,128],"Qwen2.5 72B":[72.7,80,8192,8,128],"Phi-4 14B":[14.7,40,5120,10,128],"Gemma 3 27B":[27.4,62,5376,16,128,"Gemma 3 uses sliding-window attention in most layers, so the real KV cache is smaller."],"gpt-oss-20b (MoE)":[20.9,24,2880,8,64,"MoE with 3.6B active parameters per token. Half the layers use a short sliding window, so the real KV cache is smaller."],"gpt-oss-120b (MoE)":[116.8,36,2880,8,64,"MoE with 5.1B active parameters per token. Half the layers use a short sliding window, so the real KV cache is smaller."],"Custom model":null};
+const GPUS=[["NVIDIA B300","datacenter",288],["NVIDIA B200","datacenter",180],["NVIDIA H200 SXM","datacenter",141],["NVIDIA H100 SXM","datacenter",80],["NVIDIA H100 PCIe","datacenter",80],["NVIDIA A100 80GB SXM","datacenter",80],["NVIDIA L40S","datacenter",48],["NVIDIA RTX PRO 6000 Blackwell","workstation",96],["NVIDIA DGX Spark","desktop",128],["AMD Instinct MI355X","datacenter",288],["AMD Instinct MI325X","datacenter",256],["AMD Instinct MI300X","datacenter",192],["NVIDIA GeForce RTX 5090","consumer",32],["NVIDIA GeForce RTX 5080","consumer",16],["NVIDIA GeForce RTX 5070 Ti","consumer",16],["NVIDIA GeForce RTX 5070","consumer",12],["NVIDIA GeForce RTX 5060 Ti 16GB","consumer",16],["NVIDIA GeForce RTX 4090","consumer",24],["NVIDIA GeForce RTX 4080 SUPER","consumer",16],["NVIDIA GeForce RTX 3090","consumer",24],["NVIDIA GeForce RTX 3060 12GB","consumer",12],["AMD Radeon RX 9070 XT","consumer",16],["AMD Radeon RX 7900 XTX","consumer",24],["Apple M4 Max (max config)","laptop/desktop",128],["Apple M3 Ultra (max config)","desktop",512]];
+const $=id=>document.getElementById(id),G=1024**3;
+const ms=$("model");for(const k in MODELS){const o=document.createElement("option");o.textContent=k;ms.appendChild(o)}
+const COLORS={"Weights":"#4ed29c","KV cache":"#5b8cff","Overhead":"#7b8499","Gradients":"#f0a35b","Optimizer states":"#e56b6f","Adapters + optimizer":"#f0a35b","Activations":"#b48cff"};
+function calc(){
+  const m=MODELS[ms.value];$("custom").classList.toggle("on",!m);
+  let P,L,H,KV,HD,note="";
+  if(m){[P,L,H,KV,HD]=m;note=m[5]||""}else{P=+$("params").value;L=+$("layers").value;KV=+$("kvh").value;HD=+$("hd").value;H=KV*HD*4}
+  const mode=$("mode").value,ctx=+$("ctx").value,b=Math.max(1,+$("batch").value||1),n=P*1e9,r={};
+  $("prec").disabled=mode!=="inference";
+  if(mode==="inference"){r["Weights"]=n*+$("prec").value;r["KV cache"]=2*L*KV*HD*+$("kvp").value*ctx*b;r["Overhead"]=0.8*G+0.05*r["Weights"]}
+  else{const act=b*ctx*H*(L*2+34);
+    if(mode==="full"){r["Weights"]=n*2;r["Gradients"]=n*2;r["Optimizer states"]=n*12}
+    else{r["Weights"]=n*(mode==="lora"?2:0.52);r["Adapters + optimizer"]=n*0.01*16}
+    r["Activations"]=act;r["Overhead"]=G}
+  const tot=Object.values(r).reduce((a,c)=>a+c,0),gb=tot/G;
+  $("total").textContent=gb.toFixed(1)+" GB";
+  $("tbl").innerHTML=Object.entries(r).map(([k,v])=>`<tr><td><span class="dot" style="background:${COLORS[k]}"></span>${k}</td><td>${(v/G).toFixed(1)} GB</td></tr>`).join("");
+  $("bar").innerHTML=Object.entries(r).map(([k,v])=>`<span title="${k}" style="width:${v/tot*100}%;background:${COLORS[k]}"></span>`).join("");
+  $("mnote").textContent=note;
+  const fit=GPUS.filter(g=>g[2]>=gb).sort((a,c)=>a[2]-c[2]);
+  let html=fit.slice(0,10).map(g=>`<span class="chip ok">${g[0].replace("NVIDIA GeForce ","").replace("NVIDIA ","")} · ${g[2]} GB</span>`).join("");
+  if(!fit.length||gb>80){for(const [nm,mem] of [["H100 80GB",80],["H200 141GB",141],["B200 180GB",180]])html+=`<span class="chip">${Math.ceil(gb/(mem*0.9))}× ${nm}</span>`}
+  $("fits").innerHTML=html||'<span class="chip">None</span>';
+}
+document.querySelectorAll("select,input").forEach(e=>e.addEventListener("input",calc));calc();
+</script>
+</body>
+</html>

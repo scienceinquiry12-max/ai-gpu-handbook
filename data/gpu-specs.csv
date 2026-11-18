@@ -1,0 +1,26 @@
+name,vendor,architecture,year,segment,memory_gb,memory_type,bandwidth_gb_s,tdp_w,bf16_dense_tflops,fp8_dense_tflops,launch_price_usd,notes
+NVIDIA B300,NVIDIA,Blackwell Ultra,2025,datacenter,288,HBM3e,8000,,,,,Blackwell Ultra; per-GPU memory in HGX B300
+NVIDIA B200,NVIDIA,Blackwell,2024,datacenter,180,HBM3e,8000,1000,2250,4500,,HGX B200 per-GPU figures; FP4 dense 9000 TFLOPS
+NVIDIA H200 SXM,NVIDIA,Hopper,2024,datacenter,141,HBM3e,4800,700,989,1979,,Same compute as H100 SXM with more and faster memory
+NVIDIA H100 SXM,NVIDIA,Hopper,2022,datacenter,80,HBM3,3350,700,989,1979,,
+NVIDIA H100 PCIe,NVIDIA,Hopper,2022,datacenter,80,HBM2e,2000,350,756,1513,,
+NVIDIA A100 80GB SXM,NVIDIA,Ampere,2020,datacenter,80,HBM2e,2039,400,312,,,No FP8 support
+NVIDIA L40S,NVIDIA,Ada Lovelace,2023,datacenter,48,GDDR6,864,350,362,733,,
+NVIDIA RTX PRO 6000 Blackwell,NVIDIA,Blackwell,2025,workstation,96,GDDR7,1792,600,,,,Workstation edition
+NVIDIA DGX Spark,NVIDIA,Blackwell (GB10),2025,desktop,128,LPDDR5X unified,273,,,,3999,Unified CPU+GPU memory
+AMD Instinct MI355X,AMD,CDNA 4,2025,datacenter,288,HBM3e,8000,1400,2500,5000,,Approximate dense figures
+AMD Instinct MI325X,AMD,CDNA 3,2024,datacenter,256,HBM3e,6000,1000,1307,2615,,
+AMD Instinct MI300X,AMD,CDNA 3,2023,datacenter,192,HBM3,5300,750,1307,2615,,
+NVIDIA GeForce RTX 5090,NVIDIA,Blackwell,2025,consumer,32,GDDR7,1792,575,,,1999,
+NVIDIA GeForce RTX 5080,NVIDIA,Blackwell,2025,consumer,16,GDDR7,960,360,,,999,
+NVIDIA GeForce RTX 5070 Ti,NVIDIA,Blackwell,2025,consumer,16,GDDR7,896,300,,,749,
+NVIDIA GeForce RTX 5070,NVIDIA,Blackwell,2025,consumer,12,GDDR7,672,250,,,549,
+NVIDIA GeForce RTX 5060 Ti 16GB,NVIDIA,Blackwell,2025,consumer,16,GDDR7,448,180,,,429,Buy the 16 GB version for AI
+NVIDIA GeForce RTX 4090,NVIDIA,Ada Lovelace,2022,consumer,24,GDDR6X,1008,450,,,1599,
+NVIDIA GeForce RTX 4080 SUPER,NVIDIA,Ada Lovelace,2024,consumer,16,GDDR6X,736,320,,,999,
+NVIDIA GeForce RTX 3090,NVIDIA,Ampere,2020,consumer,24,GDDR6X,936,350,,,1499,Popular on the used market for AI
+NVIDIA GeForce RTX 3060 12GB,NVIDIA,Ampere,2021,consumer,12,GDDR6,360,170,,,329,
+AMD Radeon RX 9070 XT,AMD,RDNA 4,2025,consumer,16,GDDR6,640,304,,,599,
+AMD Radeon RX 7900 XTX,AMD,RDNA 3,2022,consumer,24,GDDR6,960,355,,,999,
+Apple M4 Max (max config),Apple,Apple Silicon,2024,laptop/desktop,128,LPDDR5X unified,546,,,,,Unified memory shared with CPU
+Apple M3 Ultra (max config),Apple,Apple Silicon,2025,desktop,512,LPDDR5 unified,819,,,,,Unified memory shared with CPU
