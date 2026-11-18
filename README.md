@@ -38,7 +38,9 @@ Longer contexts add KV cache on top: about **16 GB extra for Llama 3.1 8B at 128
 
 ## LLM VRAM calculator
 
-**Web version:** [scienceinquiry12-max.github.io/ai-gpu-handbook](https://scienceinquiry12-max.github.io/ai-gpu-handbook/). Pick a model, precision, context length and task (run, QLoRA, LoRA or full fine-tune).
+**Web versions:** the full [VRAM calculator on TensorCore.si](https://tensorcore.si/vram-calculator/), or the lightweight [open-source version](https://scienceinquiry12-max.github.io/ai-gpu-handbook/) in this repo. Pick a model, precision, context length and task (run, QLoRA, LoRA or full fine-tune).
+
+**More free tools on TensorCore.si:** [GPU specs database](https://tensorcore.si/gpu-specs/) · [Training cost calculator](https://tensorcore.si/training-cost-calculator/) · [LLM benchmarks](https://tensorcore.si/llm-benchmarks/) · [Number format converter](https://tensorcore.si/number-format-converter/) · [AI glossary](https://tensorcore.si/glossary/) · [All tools](https://tensorcore.si/tools/)
 
 **Command line** (pure Python, no dependencies):
 
@@ -89,7 +91,7 @@ gpus = pd.read_csv("https://raw.githubusercontent.com/scienceinquiry12-max/ai-gp
 print(gpus.sort_values("bandwidth_gb_s", ascending=False).head())
 ```
 
-Found a wrong number or a missing GPU? [Open an issue](../../issues) or a pull request.
+Browse and compare more GPUs in the [GPU specs database](https://tensorcore.si/gpu-specs/). Found a wrong number or a missing GPU? [Open an issue](../../issues) or a pull request.
 
 ## Cheat sheets
 
